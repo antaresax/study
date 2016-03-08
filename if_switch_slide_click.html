@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+
+<p id="demo"></p>
+
+<script type="text/javascript">
+function onoff(){
+
+  if(document.getElementById("on").value >= 2){
+    document.getElementById("onoff").value=document.getElementById("on").value++;
+    document.getElementById("demo").innerHTML = document.getElementById("on").value+"hi";
+
+  }else{
+    document.getElementById("onoff").value="Off";
+    document.getElementById("demo").innerHTML = document.getElementById("on").value;
+
+  }
+ a = document.getElementById("on").value;
+switch (a) {
+  case '5'  : 
+alert("Gfd"); 
+break;
+  case '6'  : 
+alert("nmbmv"); 
+break;
+
+  default   : 
+alert("defa"); 
+break;
+}
+}
+</script>
+
+
+<button onclick="onoff()" value="On" id="onoff" >Click me</button>
+
+ 
+  <input type="range" id="on" name="points" value="1" step="1" min="0" max="10">
+ 
+
+
+
+</body>
+</html>
