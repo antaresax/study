@@ -8,9 +8,9 @@
 <script type="text/javascript">
 function onoff(){
   a = document.getElementById('onoff').value;
-  if(document.getElementById("on").value <= 6){
+  if(document.getElementById("on").value <= 2){
     document.getElementById("onoff").value="On";
-    document.getElementById("demo").innerHTML = "Hello";
+    document.getElementById("demo").innerHTML = document.getElementById("on").value+"hi";
 
   }else{
     document.getElementById("onoff").value="Off";
@@ -24,7 +24,7 @@ function onoff(){
 <button onclick="onoff()" value="On" id="onoff" >Click me</button>
 
  
-  <input type="range" id="on" name="points" min="0" max="10">
+  <input type="range" id="on" name="points" step="0.1" min="0" max="10">
  
 
 
