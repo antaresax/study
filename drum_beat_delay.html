@@ -131,8 +131,18 @@ function off() {
     
   
     clearInterval(loop);
-    gain.gain.value = 0.0;
+  var ppp = setTimeout(function(){ 	
+		gain.gain.value = 0.0;
+		delay();
 
+	}, 10);
+
+
+function delay() {
+
+var ppp = setTimeout(function(){ 	
+		gain.gain.value = 0;}, 100);
+}
     	
     	 
 }
