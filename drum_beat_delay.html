@@ -44,7 +44,7 @@
 					
 				<input type="button" class="stop-button" value="on"  onClick="drum1();" />
 			
-					<input type="button" class="stop-button" value="off"  onClick="off();" />
+					<input type="button" class="button" value="off"  onClick="off(); " />
 		</div>
 		<div class="push"></div>
 	</div>
@@ -55,7 +55,7 @@
 var context = new AudioContext(); // Create audio container with webkit prefix
 
 // Declare variables in the global scope so they can be disconnected
-var oscillator, gain, a, b, bpm,loop,ppp;
+var oscillator, gain, a, b, bpm,loop,ppp,off;
 
 // Create function that routes an OscillatorNode through a GainNode and then to the output
 function startOsc(){ // Frequency is passed to this function from input button 
@@ -65,15 +65,21 @@ function startOsc(){ // Frequency is passed to this function from input button
 	bpm= context.createOscillator();  // Create sound source
 	oscillator.type = 0; // Sine wave
 	oscillator.frequency.value = 100; 
-	bpm.frequency.value  = 2000;// Frequency in hertz (passed from input button)
+	bpm.frequency.value  = 1000;// Frequency in hertz (passed from input button)
 // Play oscillator instantly
 	
 	// Create GainNode	
 	gain = context.createGain(); // Create gain node
-		gain.gain.value = 0.0; // Set gain to full volume
+		gain.gain.value = 0.0; 
+
+		// Create GainNode	
+	gain2 = context.createGain(); // Create gain node
+		gain2.gain.value = 0.0; // Set gain to full volume
 
 	// Connect the Nodes
-	oscillator.connect(gain); // Connect oscillator to gain
+	oscillator.connect(gain); 
+		oscillator.connect(gain2);
+		gain2.connect(context.destination); 	// Connect oscillator to gain
 	gain.connect(context.destination); // Connect gain to output
 
 
@@ -88,18 +94,48 @@ function startOsc(){ // Frequency is passed to this function from input button
 function drum1() {
 
 
-var a = bpm.frequency.value 
-var loop = setInterval(function(){ 	
+ loop = setInterval(function(){ 	
 		
-	gain.gain.value = 0.5;
+	gain.gain.value = 0.7;
 	delay();
-                            }, a);
+	delay1();
+	delay2();
+                            }, bpm.frequency.value );
+
+
 function delay () {
 
 var ppp = setTimeout(function(){ 	
-		gain.gain.value = 0;}, 100);
+		gain.gain.value = 0;}, bpm.frequency.value *0.2);
 }
- }
+
+function delay1 () {
+
+var ppp = setTimeout(function(){ 	
+		gain.gain.value = 0.4;}, bpm.frequency.value *0.75);
+}
+
+function delay2 () {
+
+var ppp = setTimeout(function(){ 	
+		gain.gain.value = 0.1;}, bpm.frequency.value *0.5);
+}
+
+
+
+
+
+}
+
+function off() {
+    
+  
+    clearInterval(loop);
+    gain.gain.value = 0.0;
+
+    	
+    	 
+}
 
 
 ///////////////////////////////////////////////////////////////////
@@ -108,9 +144,6 @@ var ppp = setTimeout(function(){
 
 
 
-function off() {
-setTimeout(function(){oscillator.frequency.value = 300;}, 1000);
-}
 
     var knob1 = document.getElementById('knob1');
        knob1.addEventListener("change",knob,false);
@@ -118,7 +151,7 @@ setTimeout(function(){oscillator.frequency.value = 300;}, 1000);
        function knob(data) {
         var str= 0;
        str= data.target.value 
-        bpm.frequency.value  = str;
+       	oscillator.frequency.value  = str;
        }
 
 // JavaScript EventListeners
