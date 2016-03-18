@@ -1,0 +1,133 @@
+
+<!DOCTYPE html>
+<html>
+	<head> 
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="Controlling Web Audio API Oscillators Tutorial Demo"/>
+		<meta name="author" content="Obadiah Metivier"/>
+		<link rel="stylesheet" href="style.css">
+		<script src="cont/js/platform.js"></script>
+<link rel="import" href="cont/webcomponents/polymer.html">
+<link rel="import" href="cont/webcomponents/controls.html">
+		<style type="text/css">
+		.play {
+		    display:inline-block;
+			margin:5px 5px 5px 10px;	
+			width: 0;
+			height: 0;
+			border-left: 50px solid #444;
+			border-top: 25px solid transparent;
+			border-bottom: 25px solid transparent;
+			border-right: 0;
+			text-indent: -9999px;
+		}
+		.stop {
+			display:inline-block;
+			background: #444;
+			border: 0;
+			margin:5px;	
+			width: 50px;
+			height: 50px;
+			text-indent: -9999px;
+		}
+	
+		</style>		
+		
+	</head>
+	<body>
+		<webaudio-knob id="knob1"   style="position:absolute;left:200px;top:230px" src="cont/img/vin.png" value="600" max="2000" step="1" diameter="130" sprites="100"  ></webaudio-knob>
+	
+		<div id="content">
+		
+				<input type="button" class="play-button" value="Start"  onClick="startOsc();" />
+					
+				<input type="button" class="stop-button" value="on"  onClick="drum1();" />
+			
+					<input type="button" class="stop-button" value="off"  onClick="off();" />
+		</div>
+		<div class="push"></div>
+	</div>
+	
+	
+		<script>
+// Initialize the Audio Context
+var context = new AudioContext(); // Create audio container with webkit prefix
+
+// Declare variables in the global scope so they can be disconnected
+var oscillator, gain, a, b, bpm,loop,ppp;
+
+// Create function that routes an OscillatorNode through a GainNode and then to the output
+function startOsc(){ // Frequency is passed to this function from input button 
+
+	// Create OscillatorNode
+	oscillator = context.createOscillator();
+	bpm= context.createOscillator();  // Create sound source
+	oscillator.type = 0; // Sine wave
+	oscillator.frequency.value = 100; 
+	bpm.frequency.value  = 2000;// Frequency in hertz (passed from input button)
+// Play oscillator instantly
+	
+	// Create GainNode	
+	gain = context.createGain(); // Create gain node
+		gain.gain.value = 0.0; // Set gain to full volume
+
+	// Connect the Nodes
+	oscillator.connect(gain); // Connect oscillator to gain
+	gain.connect(context.destination); // Connect gain to output
+
+
+
+	oscillator.start(0.1); 
+
+	oscillator.start(0); 
+}
+
+
+///////////////////////////////////////////////////////////////
+function drum1() {
+
+
+var a = bpm.frequency.value 
+var loop = setInterval(function(){ 	
+		
+	gain.gain.value = 0.5;
+	delay();
+                            }, a);
+function delay () {
+
+var ppp = setTimeout(function(){ 	
+		gain.gain.value = 0;}, 100);
+}
+ }
+
+
+///////////////////////////////////////////////////////////////////
+
+
+
+
+
+function off() {
+setTimeout(function(){oscillator.frequency.value = 300;}, 1000);
+}
+
+    var knob1 = document.getElementById('knob1');
+       knob1.addEventListener("change",knob,false);
+
+       function knob(data) {
+        var str= 0;
+       str= data.target.value 
+        bpm.frequency.value  = str;
+       }
+
+// JavaScript EventListeners
+
+
+// Map Keyboard Events for the play/stop functions	
+
+
+		</script>
+	
+	</body>
+</html>
