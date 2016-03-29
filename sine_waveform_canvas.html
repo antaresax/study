@@ -64,6 +64,9 @@
     // Global Variables for Audio
     var audioContext;
     var audioBuffer;
+
+var osc;
+var gain;
     var sourceNode;
     var analyserNode;
     var javascriptNode;
@@ -125,11 +128,27 @@
         $("#stop_button").on('click', function(e) {
             e.preventDefault();
             sourceNode.stop(0);
+            osc.stop(0)
             audioPlaying = false;
         });
     });
 
     function setupAudioNodes() {
+
+
+         
+    gain = audioContext.createGain();
+ osc = audioContext.createOscillator();
+    osc.type = 'sawtooth';
+    osc.frequency.value = 1;
+gain.gain.value = 0.7;
+
+    osc.connect(gain);
+     gain.connect(audioContext.destination);
+
+ osc.start(0);
+
+
         sourceNode     = audioContext.createBufferSource();
         analyserNode   = audioContext.createAnalyser();
         javascriptNode = audioContext.createScriptProcessor(sampleSize, 1, 1);
@@ -138,8 +157,8 @@
         amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
 
         // Now connect the nodes together
-        sourceNode.connect(audioContext.destination);
-        sourceNode.connect(analyserNode);
+       
+        gain.connect(analyserNode);
         analyserNode.connect(javascriptNode);
         javascriptNode.connect(audioContext.destination);
     }
