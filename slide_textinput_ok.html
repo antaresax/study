@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p>Enter a number and click OK:</p>
+
+<input id="id1" type="number" min="100">
+<button onclick="myFunction()">OK</button>
+
+  <input type="range" id="ver" name="points" step="0.1" min="0" max="100">
+
+<p>If the number is less than 100 (the input's min attribute), an error message will be displayed.</p>
+
+<p id="demo">1</p>
+<p id="demo1"  style="position:absolute;left:200px;top:230px" >b</p>
+
+<script>
+
+ var ver = document.getElementById('ver');
+       ver.addEventListener("change",knob,false);
+
+       function knob(data) {
+        var str= 0;
+       str= data.target.value 
+ 
+
+
+    document.getElementById("demo").innerHTML =document.getElementById("ver").value ;
+
+
+   document.getElementById("id1").value =document.getElementById("ver").value ;
+
+    document.getElementById("id1").innerHTML =document.getElementById("ver").value ;
+
+
+
+    document.getElementById("demo1").innerHTML =document.getElementById("id1").value ;
+
+
+
+
+
+ }
+
+
+
+
+function myFunction() {
+
+   document.getElementById("ver").value =document.getElementById("id1").value ;
+
+    document.getElementById("demo").innerHTML =document.getElementById("id1").value  ;
+    var txt = "";
+    if (document.getElementById("id1").validity.rangeUnderflow) {
+        txt = "Value too small";
+    } else {
+        txt = "Input OK";
+    } 
+
+}
+</script>
+
+</body>
+</html>
+
