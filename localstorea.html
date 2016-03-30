@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<div id="result"></div>
+
+<input id="id1" value="44"  type="number" min="100">
+<script>
+// Check browser support
+function abc() {
+  
+    localStorage.setItem("a",document.getElementById("id1").value );
+
+
+    document.getElementById("result").innerHTML = localStorage.getItem("a");
+
+
+
+} 
+function abcd() {
+  localStorage.removeItem("a");
+
+    document.getElementById("result").innerHTML = localStorage.getItem("a");
+
+
+} 
+
+
+</script>
+<button type="button" onclick=abc();>Data1</button>
+<button type="button" onclick=abcd();>Data1</button>
+</body>
+</html>
