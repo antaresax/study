@@ -65,18 +65,18 @@
     var audioContext;
     var osc;
     var gain;
-    var audioBuffer;
+ 
 
     var analyserNode;
     var javascriptNode;
-    var audioData = null;
+
     var audioPlaying = false;
     var sampleSize = 1024;  // number of samples to collect before analyzing FFT
                             // decreasing this gives a faster sonogram, increasing it slows it down
     var amplitudeArray;         // array to hold frequency data
 
     // This must be hosted on the same server as this page - otherwise you get a Cross Site Scripting error
-    var audioUrl = "abc.wav";
+
 
     // Global Variables for Drawing
     var column = 0;
