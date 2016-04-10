@@ -11,7 +11,7 @@
   </tr></table>
 </div>
 
-
+<input type="range" value="100" step="1"id = "ver" min="0" max="10" oninput="changeGain(value, 'lowGain');"></input>
 
 <div class='main'>
   <!-- Start of tutorial code ----------------------------------------------------------  -->
@@ -195,6 +195,27 @@ amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
             ctx.clearRect(0, 0, canvasWidth, canvasHeight);
         }
     }
+
+
+
+
+var knob = document.getElementById('ver');
+
+knob.addEventListener("change",knob0,false);
+
+
+
+function knob0(data) {
+
+str= 0;
+
+str= data.target.value
+
+osc.frequency.value = str;
+
+
+
+}
 
 
 </script>
