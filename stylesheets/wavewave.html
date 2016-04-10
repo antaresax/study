@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -88,6 +89,7 @@
         $("#start_button").click(function(e) {
             e.preventDefault();
             column = 0;
+
             clearCanvas();
             // Set up / reset the audio Analyser and Source Buffer
             setupAudioNodes();
@@ -123,14 +125,20 @@
     osc.type = 'sawtooth';
     osc.frequency.value = 1000;
 gain.gain.value = 0.9;
+
     osc.connect(gain);
      gain.connect(audioContext.destination);
+
  osc.start(0);
+
+
         sourceNode     = audioContext.createBufferSource();
         analyserNode   = audioContext.createAnalyser();
         javascriptNode = audioContext.createScriptProcessor(sampleSize, 1, 1);
+
         // Create the array for the data values
         amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
+
         // Now connect the nodes together
        
         gain.connect(analyserNode);
@@ -185,8 +193,10 @@ gain.gain.value = 0.9;
     }
     function clearCanvas() {
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
           var knob = document.getElementById('ver');
        knob.addEventListener("change",knob0,false);
+
        function knob0(data) {
       str= 0;
    str= data.target.value 
