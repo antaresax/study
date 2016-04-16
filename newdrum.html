@@ -34,25 +34,51 @@ function loadContent(num){
 
 
 <script>
-var audio, playbtn, mutebtn, seekslider, volumeslider, seeking=false, seekto, curtimetext, durtimetext;
+var audio, playbtn, mutebtn, seekslider, volumeslider, seeking=false, seekto, curtimetext, durtimetext, speedlist, a;
 function initAudioPlayer(){
+
+
+
     audio = new Audio();
     audio.src = "beat3.wav";
     audio.loop = true;
 
+     audio.playbackRate = 0.9;
+ 
+
+var mylist = document.getElementById("mylist");
+    mylist.addEventListener("change", changeTrack);
+    // Functions
+    function changeTrack(event){
+        audio.src = event.target.value
+        audio.play();
+ 
+    }
+
+
+
+var speedlist = document.getElementById("ver1");
+    speedlist.addEventListener("change",changeSpeed, false);
+    function changeSpeed(eve){
+       
+
+         var str= 0;
+  str= eve.target.value 
+          audio.playbackRate = str/100;
+           div1.innerHTML =        audio.playbackRate;
+    }
+
     // Set object references
     playbtn = document.getElementById("playpausebtn");
     mutebtn = document.getElementById("mutebtn");
-    seekslider = document.getElementById("seekslider");
+   
     volumeslider = document.getElementById("volumeslider");
     curtimetext = document.getElementById("curtimetext");
     durtimetext = document.getElementById("durtimetext");
     // Add Event Handling
     playbtn.addEventListener("click",playPause);
     mutebtn.addEventListener("click", mute);
-    seekslider.addEventListener("mousedown", function(event){ seeking=true; seek(event); });
-    seekslider.addEventListener("mousemove", function(event){ seek(event); });
-    seekslider.addEventListener("mouseup",function(){ seeking=false; });
+
     volumeslider.addEventListener("mousemove", setvolume);
     audio.addEventListener("timeupdate", function(){ seektimeupdate(); });
     // Functions
@@ -84,32 +110,39 @@ function initAudioPlayer(){
 
 
 
-    function seek(event){
-        if(seeking){
-            seekslider.value = event.clientX - seekslider.offsetLeft;
-            seekto = audio.duration * (seekslider.value / 100);
-            audio.currentTime = seekto;
-        }
-    }
     function setvolume(){
-        audio.volume = volumeslider.value / 100;
+        audio.volume = volumeslider.value / 200;
     }
-    function seektimeupdate(){
-        var nt = audio.currentTime * (100 / audio.duration);
-        seekslider.value = nt;
-        var curmins = Math.floor(audio.currentTime / 60);
-        var cursecs = Math.floor(audio.currentTime - curmins * 60);
-        var durmins = Math.floor(audio.duration / 60);
-        var dursecs = Math.floor(audio.duration - durmins * 60);
-        if(cursecs < 10){ cursecs = "0"+cursecs; }
-        if(dursecs < 10){ dursecs = "0"+dursecs; }
-        if(curmins < 10){ curmins = "0"+curmins; }
-        if(durmins < 10){ durmins = "0"+durmins; }
-        curtimetext.innerHTML = curmins+":"+cursecs;
-        durtimetext.innerHTML = durmins+":"+dursecs;
-    }
+
+
+
+
+
+
 }
+
+function a(){
+
+  audio.src = "beat3.wav";
+    audio.play(); 
+}
+
+
+function b(){
+
+  audio.src ="beat2.wav" ;
+    audio.play(); 
+}
+
+
+
 window.addEventListener("load", initAudioPlayer);
+
+
+
+
+
+ 
 </script>
 </head>
 <body>
@@ -120,8 +153,19 @@ window.addEventListener("load", initAudioPlayer);
 </div>
 <button id="mutebtn"></button>
 <input id="volumeslider" type="range" min="0" max="100" value="100" step="1">
-  <button id="playpausebtn"  onclick="playPause();">Section 1</button>
+  <button id="playpausebtn"  onclick="audio.play();">Start</button>
+    <button id="pl"  onclick="a();">jazz</button>
+      <button id="pl2"  onclick="b();">blues</button>
     <div id="div1">Default content ...</div>
+
+    <input type="range" class ="ver" style="display:inline-block; margin:10px;"  value="100" step="1" id ="ver1" min="80" max="150" ></input>
+
+<select id="mylist" size="4">
+  <option value="beat3.wav">beat1</option>
+  <option value="beat2.wav">beat2</option>
+ 
+</select>
+
 
 </body>
 </html>
