@@ -45,7 +45,7 @@ function loadContent(num){
 }
 
 .dropbtn:hover, .dropbtn:focus {
-    background-color: black;
+    background-color:radial-gradient(circle, white, gray,black);
 }
 
 
@@ -70,29 +70,32 @@ function loadContent(num){
     display: block;
 }
 
-.dropdown a:hover {background-color: #ffb366}
+.dropdown a:hover {background-color: red;}
 
 .show {display:block;}
+
 </style>
 
 <style>
-.button {
+.button1 {
     position: relative;
-    background-color: #4CAF50;
+    background-color: black;
     border: none;
-    font-size: 28px;
+    font-size: 16px;
     color: #FFFFFF;
-    padding: 20px;
-    width: 200px;
+    padding: 40px 6px;
+    width: 100px;
     text-align: center;
     -webkit-transition-duration: 0.4s; /* Safari */
     transition-duration: 0.4s;
     text-decoration: none;
     overflow: hidden;
     cursor: pointer;
+       border-radius: 8px;
+       box-shadow: 5px 5px 5px gray;
 }
 
-.button:after {
+.button1:after {
     content: "";
     background: white;
     display: block;
@@ -105,18 +108,31 @@ function loadContent(num){
     transition: all 0.6s
 }
 
-.button:active:after {
-     background-color: white;
+.button1:active:after {
+     background-color:radial-gradient(circle, white, gray,black);
     padding: 0;
     margin: 0;
     opacity: 1;
     transition: 0s
 }
 
-.button:hover {
-    background-color: red; /* Green */
-    color: white;
+.button1:hover {
+    background: radial-gradient(circle, white, black);/* Green */
+  
 }
+.button2:hover {
+    background: radial-gradient(circle, white,  #3399ff);/* Green */
+  
+}
+
+.button3:hover {
+    background: radial-gradient(circle, white,  #4dff4d);/* Green */
+  
+}
+.button2 {background-color: #3399ff;}
+.button3 {background-color: #4dff4d;}
+.button4 {font-size: 20px;}
+.button5 {font-size: 24px;}
 </style>
 
 
@@ -124,7 +140,12 @@ function loadContent(num){
 
 
 <body>
-<button id="playpausebtn"></button>
+
+
+
+  <input type="checkbox" id="clic" onmouseover="myFunctio()" onclick="alert('click event occured')">
+
+<button id="playpausebtn">dsfd</button>
 <input id="seekslider" type="range" min="0" max="100" value="0" step="1">
 <div id="timebox">
   <span id="curtimetext">00:00</span> / <span id="durtimetext">00:00</span>
@@ -145,7 +166,15 @@ function loadContent(num){
 
 </select>
 
-<button class="button" value="clicked" >Click Me</button>
+<button class="button1" id="start" onclick="audio.play();" >Play</button>
+<button class="button1" id="playpausebtn" >Pause</button>
+<button class="button1 button2" id="clic" >Hihat dr</button>
+<button class="button1 button2" id="clic" >snare dr</button>
+<button class="button1 button3" id="clic" >crash dr</button> <br><br>
+<button class="button1" id="clic" >Kick dru</button>
+<button class="button1 button2" id="clic" >Hihat dr</button>
+<button class="button1 button2" id="clic" >snare dr</button>
+<button class="button1 button3" id="clic" >crash dr</button>
 
 
 <h2>Drum preset</h2>
@@ -254,6 +283,11 @@ var speedlist = document.getElementById("ver1");
 
 
 }
+
+function myFunctio() {
+    document.getElementById("clic").click();
+}
+
 
 function a(){
 
