@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+<style>
+body {
+    margin: 0;
+    font-family: 'Lato', sans-serif;
+}
+
+.overlay {
+    height: 50%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0, 0.9);
+    overflow-x: hidden;
+    transition: 0.5s;
+}
+
+.overlay-content {
+    position: relative;
+    top: 0%;
+    width: 100%;
+    text-align: center;
+    margin-top: 3px;
+}
+
+.overlay a {
+    padding: 8px;
+    text-decoration: none;
+    font-size: 36px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.overlay a:hover, .overlay a:focus {
+    color: #f1f1f1;
+}
+
+.closebtn {
+    position: absolute;
+    top: 20px;
+    right: 45px;
+    font-size: 60px !important;
+}
+
+@media screen and (max-height: 450px) {
+  .overlay a {font-size: 20px}
+  .closebtn {
+    font-size: 20px !important;
+    top: 15px;
+    right: 35px;
+  }
+}
+</style>
+
+
+
+ <input type="range" value="100" step="1"id = "ver" min="0" max="10" ></input>
+  <input type="button"  value="Start" onclick="aa();">
+  <input type="button"  value="Stop" onclick="bb();">
+   <input type="button"  value="Sp" onclick="openNav();">
+
+
+    <div id="myNav" class="overlay">
+
+  <div class="overlay-content">
+     <canvas id="canvas" style="width:500px; height:200px; background:black; float:left;" width="500" height="200" ></canvas>
+ 
+    <a href="#" onclick="closeNav();">open</a>
+   
+
+  </div>
+
+    
+<body>
+
+<script >
+
+
+  
+
+
+
+
+
+    window.requestAnimFrame = (function(){
+      return  window.requestAnimationFrame       ||
+              window.webkitRequestAnimationFrame ||
+              function(callback, element){
+                window.setTimeout(callback, 1000 / 60);
+              };
+    })();
+    // Global Variables for Audio
+    var audioContext, osc, gain, analyserNode, javascriptNode, amplitudeArray, ctx;
+    var audioPlaying = false;
+    var sampleSize = 1024;  
+    var column = 0;
+    var canvasWidth  = 800;
+    var canvasHeight = 256;
+    window.onload = function() {
+canvas = document.getElementById('canvas');
+ctx = canvas.getContext('2d');
+        // the AudioContext is the primary 'container' for all your audio node objects
+        try {
+            audioContext = new AudioContext();
+        } catch(e) {
+            alert('Web Audio API is not supported in this browser');
+        }
+
+openNav();
+        
+    };
+    function setupAudioNodes() {
+       gain = audioContext.createGain();
+      osc = audioContext.createOscillator();
+      osc.type = 'sawtooth';
+      osc.frequency.value = 1;
+       gain.gain.value = 0.7;
+       osc.connect(gain);
+        gain.connect(audioContext.destination);
+        osc.start(0);
+         audioPlaying = true;
+     
+        analyserNode   = audioContext.createAnalyser();
+        javascriptNode = audioContext.createScriptProcessor(sampleSize, 1, 1);
+        amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
+        // Now connect the nodes together
+       
+        gain.connect(analyserNode);
+        analyserNode.connect(javascriptNode);
+        javascriptNode.connect(audioContext.destination);
+    }
+    function aa() {
+   
+            column = 0;
+            setupAudioNodes();
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+      
+            javascriptNode.onaudioprocess = function () {
+              
+                if (audioPlaying == true) {
+                    requestAnimFrame(drawTimeDomain);
+                }
+            }
+      
+        };
+  function bb() {
+    
+       
+            osc.stop(0);
+            audioPlaying = false;
+        };
+  
+    function drawTimeDomain() {
+amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
+                analyserNode.getByteTimeDomainData(amplitudeArray);
+        var minValue = 9999999;
+        var maxValue = 0;
+        for (var i = 0; i < amplitudeArray.length; i++) {
+            var value = amplitudeArray[i] / 256;
+            if(value > maxValue) {
+                maxValue = value;
+            } else if(value < minValue) {
+                minValue = value;
+            }
+        }
+        var y_lo = canvasHeight - (canvasHeight * minValue) - 1;
+        var y_hi = canvasHeight - (canvasHeight * maxValue) - 1;
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(column,y_lo, 1, y_hi - y_lo);
+        // loop around the canvas when we reach the end
+        column += 1;
+        if(column >= canvasWidth) {
+            column = 0;
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        }
+    }
+var knob = document.getElementById('ver');
+knob.addEventListener("change",knob0,false);
+function knob0(data) {
+str= 0;
+str= data.target.value
+osc.frequency.value = str;
+}
+
+
+function openNav() {
+    document.getElementById("myNav").style.width = "100%";
+}
+
+function closeNav() {
+    document.getElementById("myNav").style.width = "0%";
+}  
+
+</script>
+
+
+
+</body>
+</html>
