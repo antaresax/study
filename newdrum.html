@@ -1,5 +1,4 @@
 <!--
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -38,7 +37,6 @@ body {
     margin: 0;
     font-family: 'Lato', sans-serif;
 }
-
 .overlay {
     height: 100%;
     width: 0;
@@ -51,7 +49,6 @@ body {
     overflow-x: hidden;
     transition: 0.5s;
 }
-
 .overlay-content {
     position: relative;
     top: 25%;
@@ -59,7 +56,6 @@ body {
     text-align: center;
     margin-top: 30px;
 }
-
 .overlay a {
     padding: 8px;
     text-decoration: none;
@@ -68,18 +64,15 @@ body {
     display: block;
     transition: 0.3s;
 }
-
 .overlay a:hover, .overlay a:focus {
     color: #f1f1f1;
 }
-
 .closebtn {
     position: absolute;
     top: 20px;
     right: 45px;
     font-size: 60px !important;
 }
-
 @media screen and (max-height: 450px) {
   .overlay a {font-size: 20px}
   .closebtn {
@@ -100,17 +93,13 @@ body {
   box-shadow: 5px 5px 5px gray;
      border-radius: 8px;
 }
-
 .dropbtn:hover, .dropbtn:focus {
     background-color:radial-gradient(circle, white, gray,black);
 }
-
-
 .dropdown {
     position: relative;
     display: inline-block;
 }
-
 .dropdown-content {
     display: none;
     position: absolute;
@@ -119,18 +108,14 @@ body {
     overflow: auto;
   box-shadow: 5px 5px 5px gray;
 }
-
 .dropdown-content a {
     color: black;
     padding: 16px 16px;
     text-decoration: none;
     display: block;
 }
-
 .dropdown a:hover {background-color: red;}
-
 .show {display:block;}
-
 </style>
 
 <style>
@@ -151,7 +136,6 @@ body {
        border-radius: 8px;
        box-shadow: 5px 5px 5px gray;
 }
-
 .button1:after {
     content: "";
     background: white;
@@ -164,7 +148,6 @@ body {
     opacity: 0;
     transition: all 0.6s
 }
-
 .button1:active:after {
      background-color:radial-gradient(circle, white, gray,black);
     padding: 0;
@@ -172,7 +155,6 @@ body {
     opacity: 1;
     transition: 0s
 }
-
 .button1:hover {
     background: radial-gradient(circle, white, black);/* Green */
   
@@ -181,7 +163,6 @@ body {
     background: radial-gradient(circle, white,  #3399ff);/* Green */
   
 }
-
 .button3:hover {
     background: radial-gradient(circle, white,  #4dff4d);/* Green */
   
@@ -266,21 +247,13 @@ body {
   </div>
 </body>
 <script>
-
-
-
 var audio, playbtn, mutebtn, seekslider, volumeslider, curtimetext, durtimetext, speedlist, a;
 function initAudioPlayer(){
-
-
-
     audio = new Audio();
     audio.src = "beat3.wav";
     audio.loop = true;
-
      audio.playbackRate = 0.9;
  
-
 var mylist = document.getElementById("mylist");
     mylist.addEventListener("change", changeTrack);
     // Functions
@@ -289,20 +262,15 @@ var mylist = document.getElementById("mylist");
         audio.play();
  
     }
-
-
-
 var speedlist = document.getElementById("ver1");
     speedlist.addEventListener("change",changeSpeed, false);
     function changeSpeed(eve){
        
-
          var str= 0;
   str= eve.target.value 
           audio.playbackRate = str/100;
            div1.innerHTML =        audio.playbackRate;
     }
-
     // Set object references
     playbtn = document.getElementById("playpausebtn");
     mutebtn = document.getElementById("mutebtn");
@@ -313,7 +281,7 @@ var speedlist = document.getElementById("ver1");
     // Add Event Handling
     playbtn.addEventListener("click",playPause);
     mutebtn.addEventListener("click", mute);
-
+    volumeslider.addEventListener("change",setvolume);
     
     // Functions
     function playPause(){
@@ -324,11 +292,8 @@ var speedlist = document.getElementById("ver1");
             audio.pause();
            // playbtn.style.background = "url(images/play.png) no-repeat";
         }
-
-
     var div1 = document.getElementById("div1");
     div1.innerHTML = "Loaded content for section "
-
     }
     function mute(){
         if(audio.muted){
@@ -339,62 +304,31 @@ var speedlist = document.getElementById("ver1");
            // mutebtn.style.background = "url(images/speaker_muted.png) no-repeat";
         }
     }
-
-
-
-
-
     function setvolume(){
         audio.volume = volumeslider.value / 200;
-
-
     }
-
-
-
-
-
-
 }
-
 function myFunctio() {
     document.getElementById("clic").click();
 }
-
-
 function a(){
-
   audio.src = "beat3.wav";
-
   div1.innerHTML = "changed preset beat3 "
 }
-
-
 function b(){
-
   audio.src ="beat2.wav" ;
  div1.innerHTML = "changed preset beat2 "
 }
-
-
-
 window.addEventListener("load", initAudioPlayer);
-
-
 ////////////////////////////////////////
-
-
-
 /* When the user clicks on the button, 
 toggle between hiding and showing the dropdown content */
 function myFunction() {
     document.getElementById("myDropdown").classList.toggle("show");
 }
-
 // Close the dropdown if the user clicks outside of it
 window.onclick = function(event) {
   if (!event.target.matches('.dropbtn')) {
-
     var dropdowns = document.getElementsByClassName("dropdown-content");
     var i;
     for (i = 0; i < dropdowns.length; i++) {
@@ -405,27 +339,18 @@ window.onclick = function(event) {
     }
   }
 }
-
-
-
-
-
-
  
 </script>
 <script>
-
 window.onload = function(){ 
    openNav();
   //openCity(event, 'London');
   
     // obj.value = "날코천재"; 
 }
-
 function openNav() {
     document.getElementById("myNav").style.width = "100%";
 }
-
 function closeNav() {
     document.getElementById("myNav").style.width = "0%";
 }
