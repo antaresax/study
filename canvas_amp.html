@@ -3,20 +3,26 @@
 <head>
   <meta charset="utf-8">
 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" type="text/javascript"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js" ></script>
+  <script src="chroma.js"></script>
 
 </head>
 <body>
 
-</table>
-</div>
 
 
- <input type="range"  value="100" step="0.1" id = "ver" min="0" max="1" ></input>
-<canvas id="canvas" style="width:500px; height:200px; background:black; float:left;" width="800" height="256" ></canvas>
+ <input type="range"  value="0" step="0.1" id = "ver" min="0" max="1.0" ></input>
+  <input type="range"  value="200" step="1" id = "ver1" min="0" max="1000" ></input>
+
+<canvas id="canvas" style="width:500px; height:200px; background:black; float:left;" width="700" height="256" ></canvas>
+
 
  <input type="button"  value="Start" onclick="aa();">
   <input type="button"  value="Stop" onclick="bb();">
+
+
+
+
 
 <script >
     // Hacks to deal with different function names in different browsers
@@ -32,24 +38,27 @@
     // Global Variables for Audio
     var audioContext;
  
- 
     var analyserNode;
     var javascriptNode;
-   
+  
     var audioPlaying = false;
-    var sampleSize = 1024;  // number of samples to collect before analyzing FFT
-                            // decreasing this gives a faster sonogram, increasing it slows it down
-    var amplitudeArray;         // array to hold frequency data
-    // This must be hosted on the same server as this page - otherwise you get a Cross Site Scripting error
-   
+    var sampleSize = 1024;         // number of samples to collect before analyzing FFT
+    var fftSize = 1024;         // must be power of two
+    var frequencyArray;         // array to hold frequency data
+
     // Global Variables for Drawing
     var column = 0;
     var canvasWidth  = 800;
     var canvasHeight = 256;
     var ctx;
+    // Uses the chroma.js library by Gregor Aisch to create a color gradient
+    // download from https://github.com/gka/chroma.js
+    var colorScale = new chroma.scale(['black', 'red', 'yellow', 'white']).out('hex');
    window.onload = function() {
+
+
         // get the context from the canvas to draw on
-           canvas = document.getElementById('canvas');
+                 canvas = document.getElementById('canvas');
 ctx = canvas.getContext('2d');
         // the AudioContext is the primary 'container' for all your audio node objects
         try {
@@ -57,92 +66,125 @@ ctx = canvas.getContext('2d');
         } catch(e) {
             alert('Web Audio API is not supported in this browser');
         }
-       
-    }
+        // When the Start button is clicked, finish setting up the audio nodes, play the sound and
+        // gather samples for FFT frequency analysis, draw the spectrogram
 
-    function setupAudioNodes() {
-           gain = audioContext.createGain();
+ }
+
+
+   
+function setupAudioNodes() {
+            sourceNode     = audioContext.createBufferSource();
+        analyserNode   = audioContext.createAnalyser();
+        analyserNode.smoothingTimeConstant = 0.0;
+        analyserNode.fftSize = fftSize;
+        javascriptNode = audioContext.createScriptProcessor(sampleSize, 1, 1);
+        // Create the array for the data values
+        frequencyArray = new Uint8Array(analyserNode.frequencyBinCount);
+        // Now connect the nodes together
+      
+ 
+         
+    gain = audioContext.createGain();
  osc = audioContext.createOscillator();
     osc.type = 'sawtooth';
     osc.frequency.value = 1000;
-gain.gain.value = 0.9;
+gain.gain.value = 0.5;
     osc.connect(gain);
      gain.connect(audioContext.destination);
  osc.start(0);
-    audioPlaying = true;
-    
-        analyserNode   = audioContext.createAnalyser();
-        javascriptNode = audioContext.createScriptProcessor(sampleSize, 1, 1);
-        // Create the array for the data values
-        amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
-        // Now connect the nodes together
-       
+
+ audioPlaying = true;
+
         gain.connect(analyserNode);
         analyserNode.connect(javascriptNode);
         javascriptNode.connect(audioContext.destination);
     }
+    // Load the sound from the URL only once and store it in global variable audioData
 
 
-      function aa()  {
-           
+
+
+ function aa()  {
+         
             column = 0;
-            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-           setupAudioNodes();
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+     
+            // Set up / reset the audio Analyser and Source Buffer
+            setupAudioNodes();
+            // setup the event handler that is triggered every time enough samples have been collected
+            // trigger the audio analysis and draw one column in the display based on the results
             javascriptNode.onaudioprocess = function () {
+                // get the Frequency Domain data for this sample
              
+                // draw one column of the spectrogram if the audio is playing
                 if (audioPlaying == true) {
-                    requestAnimFrame(drawTimeDomain);
+                    requestAnimFrame(drawSpectrogram);
                 }
             }
-            }
-        
-
-
-     function bb() {
-        
-            osc.stop(0);
-            audioPlaying = false;
-       };
-
-
-  
-    function drawTimeDomain() {
-
-  amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
-                analyserNode.getByteTimeDomainData(amplitudeArray);
-
-        var minValue = 9999999;
-        var maxValue = 0;
-        for (var i = 0; i < amplitudeArray.length; i++) {
-            var value = amplitudeArray[i] / 256;
-            if(value > maxValue) {
-                maxValue = value;
-            } else if(value < minValue) {
-                minValue = value;
+            // Load the Audio the first time through, otherwise play it from the buffer
+            // Note that the audio load is asynchronous
+            if(audioData == null) {
+                loadSound(audioUrl);
+            } else {
+                playSound(audioData);
             }
         }
-        var y_lo = canvasHeight - (canvasHeight * minValue) - 1;
-        var y_hi = canvasHeight - (canvasHeight * maxValue) - 1;
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(column,y_lo, 1, y_hi - y_lo);
+
+
+
+
+        // Stop the audio playing
+        function bb() {
+        
+           
+            osc.stop(0);
+            audioPlaying = false;
+
+  ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+        }
+
+
+
+
+
+ 
+    function drawSpectrogram() {
+
+        amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
+    analyserNode.getByteFrequencyData(frequencyArray);
+
+
+        for (var i = 0; i < frequencyArray.length; i++) {
+            // Get the color from the color map, draw 1x1 pixel rectangle
+            ctx.fillStyle = colorScale(frequencyArray[i] / 256.0);
+            ctx.fillRect(column,canvasHeight - i, 1, 1);
+        }
         // loop around the canvas when we reach the end
         column += 1;
         if(column >= canvasWidth) {
             column = 0;
-            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+              ctx.clearRect(0, 0, canvasWidth, canvasHeight);
         }
     }
    
-
-             var knob = document.getElementById('ver');
-       knob.addEventListener("change",knob0,false);
+     var ver = document.getElementById('ver');
+       ver.addEventListener("change",knob0,false);
        function knob0(data) {
       str= 0;
    str= data.target.value 
         gain.gain.value  = str;
  }
+          var ver1 = document.getElementById('ver1');
+       ver1.addEventListener("change",knob1,false);
+       function knob1(data) {
+      str= 0;
+   str= data.target.value 
+        osc.frequency.value  = str;
+ }
 </script>
-</div>
+
 
 
 
