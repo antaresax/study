@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,38 +12,13 @@
 </div>
 
 
-<div class='main'>
-  <!-- Start of tutorial code  -->
- <input type="range"  value="100" step="0.1" id = "ver" min="0" max="1" oninput="changeGain(value, 'lowGain');"></input>
+ <input type="range"  value="100" step="0.1" id = "ver" min="0" max="1" ></input>
+<canvas id="canvas" style="width:500px; height:200px; background:black; float:left;" width="800" height="256" ></canvas>
 
-<canvas id="canvas" width="800" height="256" ></canvas>
+ <input type="button"  value="Start" onclick="aa();">
+  <input type="button"  value="Stop" onclick="bb();">
 
-<p id="controls">
-  <input type="button" id="start_button" value="Start">
-  &nbsp; &nbsp;
-  <input type="button" id="stop_button" value="Stop">
-</p>
-
-<!-- ----------------------------------------------------- -->
-
-<style>
-    #canvas {
-        margin-left: auto;
-        margin-right: auto;
-        display: block;
-        background-color: black;
-    }
-    #controls {
-        text-align: center;
-    }
-    #start_button, #stop_button {
-        font-size: 16pt;
-    }
-</style>
-
-<!-- ----------------------------------------------------- -->
-
-<script type="text/javascript">
+<script >
     // Hacks to deal with different function names in different browsers
     window.requestAnimFrame = (function(){
       return  window.requestAnimationFrame       ||
@@ -54,122 +28,89 @@
                 window.setTimeout(callback, 1000 / 60);
               };
     })();
-    window.AudioContext = (function(){
-        return  window.webkitAudioContext || window.AudioContext || window.mozAudioContext;
-    })();
+ 
     // Global Variables for Audio
     var audioContext;
-    var audioBuffer;
-    var sourceNode;
+ 
+ 
     var analyserNode;
     var javascriptNode;
-    var audioData = null;
+   
     var audioPlaying = false;
     var sampleSize = 1024;  // number of samples to collect before analyzing FFT
                             // decreasing this gives a faster sonogram, increasing it slows it down
     var amplitudeArray;         // array to hold frequency data
     // This must be hosted on the same server as this page - otherwise you get a Cross Site Scripting error
-    var audioUrl = "abc.wav";
+   
     // Global Variables for Drawing
     var column = 0;
     var canvasWidth  = 800;
     var canvasHeight = 256;
     var ctx;
-    $(document).ready(function() {
+   window.onload = function() {
         // get the context from the canvas to draw on
-        ctx = $("#canvas").get()[0].getContext("2d");
+           canvas = document.getElementById('canvas');
+ctx = canvas.getContext('2d');
         // the AudioContext is the primary 'container' for all your audio node objects
         try {
             audioContext = new AudioContext();
         } catch(e) {
             alert('Web Audio API is not supported in this browser');
         }
-        // When the Start button is clicked, finish setting up the audio nodes, play the sound and
-        // gather samples for FFT frequency analysis, draw the sonogram
-        $("#start_button").click(function(e) {
-            e.preventDefault();
-            column = 0;
+       
+    }
 
-            clearCanvas();
-            // Set up / reset the audio Analyser and Source Buffer
-            setupAudioNodes();
-            // setup the event handler that is triggered every time enough samples have been collected
-            // trigger the audio analysis and draw one column in the display based on the results
-            javascriptNode.onaudioprocess = function () {
-                // get the average for the first channel
-                amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
-                analyserNode.getByteTimeDomainData(amplitudeArray);
-                // draw one column of the spectrogram if the audio is playing
-                if (audioPlaying == true) {
-                    requestAnimFrame(drawTimeDomain);
-                }
-            }
-            // Load the Audio the first time through, otherwise play it from the buffer
-            // Note that the audio load is asynchronous
-            if(audioData == null) {
-                loadSound(audioUrl);
-            } else {
-                playSound(audioData);
-            }
-        });
-        // Stop the audio playing
-        $("#stop_button").click(function(e) {
-            e.preventDefault();
-            sourceNode.stop(0);
-            audioPlaying = false;
-        });
-    });
     function setupAudioNodes() {
            gain = audioContext.createGain();
  osc = audioContext.createOscillator();
     osc.type = 'sawtooth';
     osc.frequency.value = 1000;
 gain.gain.value = 0.9;
-
     osc.connect(gain);
      gain.connect(audioContext.destination);
-
  osc.start(0);
-
-
-        sourceNode     = audioContext.createBufferSource();
+    audioPlaying = true;
+    
         analyserNode   = audioContext.createAnalyser();
         javascriptNode = audioContext.createScriptProcessor(sampleSize, 1, 1);
-
         // Create the array for the data values
         amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
-
         // Now connect the nodes together
        
         gain.connect(analyserNode);
         analyserNode.connect(javascriptNode);
         javascriptNode.connect(audioContext.destination);
     }
-    // Load the sound from the URL only once and store it in global variable audioData
-    function loadSound(url) {
-        var request = new XMLHttpRequest();
-        request.open('GET', url, true);
-        request.responseType = 'arraybuffer';
-        // When loaded, decode the data and play the sound
-        request.onload = function () {
-            audioContext.decodeAudioData(request.response, function (buffer) {
-                audioData = buffer;
-                playSound(audioData);
-            }, onError);
-        }
-        request.send();
-    }
-    // Play the sound with no delay and loop over the sample until stopped
-    function playSound(buffer) {
-        sourceNode.buffer = buffer;
-        sourceNode.start(0);    // Play the sound now
-        sourceNode.loop = true;
-        audioPlaying = true;
-    }
-    function onError(e) {
-        console.log(e);
-    }
+
+
+      function aa()  {
+           
+            column = 0;
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+           setupAudioNodes();
+            javascriptNode.onaudioprocess = function () {
+             
+                if (audioPlaying == true) {
+                    requestAnimFrame(drawTimeDomain);
+                }
+            }
+            }
+        
+
+
+     function bb() {
+        
+            osc.stop(0);
+            audioPlaying = false;
+       };
+
+
+  
     function drawTimeDomain() {
+
+  amplitudeArray = new Uint8Array(analyserNode.frequencyBinCount);
+                analyserNode.getByteTimeDomainData(amplitudeArray);
+
         var minValue = 9999999;
         var maxValue = 0;
         for (var i = 0; i < amplitudeArray.length; i++) {
@@ -188,21 +129,18 @@ gain.gain.value = 0.9;
         column += 1;
         if(column >= canvasWidth) {
             column = 0;
-            clearCanvas();
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
         }
     }
-    function clearCanvas() {
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+   
 
-          var knob = document.getElementById('ver');
+             var knob = document.getElementById('ver');
        knob.addEventListener("change",knob0,false);
-
        function knob0(data) {
       str= 0;
    str= data.target.value 
         gain.gain.value  = str;
  }
-    }
 </script>
 </div>
 
